@@ -11,7 +11,7 @@
             @else
               <img alt="image" src="{{asset('stisla/img/avatar')}}/{{Auth::user()->photo}}" class="rounded-circle mr-1">
             @endif
-            <div class="d-sm-none d-lg-inline-block">Hi, {{Auth::user()->name }}</div></a>
+            <div class="d-sm-none d-lg-inline-block">Hi, {{Auth::user()->name }} ({{Auth::user()->roles->pluck('name')[0]}})</div></a>
             <div class="dropdown-menu dropdown-menu-right">
               {{--
                 <div class="dropdown-title">Logged in 5 min ago</div>
