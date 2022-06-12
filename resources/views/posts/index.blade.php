@@ -50,6 +50,7 @@
                                     <th scope="col" class="nosort d-none">Publish</th>
                                     <th scope="col" class="nosort">Created At</th>
                                     <th scope="col" class="nosort">Updated At</th>
+                                    <th scope="col" class="nosort">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -70,6 +71,15 @@
                                     <td id="td-stat-{{$p->id}}" class="td-stat d-none">{{$p->status}}</td>
                                     <td>{{Carbon\Carbon::parse($p->created_at)->format(Constant::FORMAT_DATE_TIME)}}</td>
                                     <td>{{Carbon\Carbon::parse($p->updated_at)->format(Constant::FORMAT_DATE_TIME)}}</td>
+                                    <td>
+                                        <a href="{{route('post.edit',$p->id)}}" class="btn btn-icon btn-primary" data-toggle="tooltip" title="Edit"><i class="fas fa-edit"></i></a>
+                                        <button class="btn btn-icon btn-outline-danger" data-toggle="tooltip" title="Delete"
+                                            onclick="$('#form-delete-post-{{$p->id}}').submit();"><i class="fas fa-trash"></i></button>
+                                        <form id="form-delete-post-{{$p->id}}" action="{{route('post.destroy',$p->id)}}" method="POST">
+                                            @csrf
+                                            @method(Constant::DELETE_METHOD)
+                                        </form>
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>

@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\Category;
 use App\Helpers\Constant;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
@@ -19,8 +20,8 @@ class PostController extends Controller
     {
         $section_header = 'Article';
         $posts = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
-            Post::where('status', Constant::TRUE_CONDITION)->get() :
-            Post::where('status', Constant::TRUE_CONDITION)->where('user_id', Auth::user()->id)->get();
+            Post::all() :
+            Post::where('user_id', Auth::user()->id)->get();
         return view('posts.index', compact('section_header', 'posts'));
     }
 
@@ -33,7 +34,10 @@ class PostController extends Controller
     {
         $section_header = 'Create Article';
         $categories = Category::all();
-        return view('posts.create', compact('section_header', 'categories'));
+        $method = Constant::POST_METHOD;
+        $url = route('post.store');
+        $post = null;
+        return view('posts.create_or_edit', compact('section_header', 'categories', 'url', 'method', 'post'));
     }
 
     /**
@@ -51,6 +55,7 @@ class PostController extends Controller
         $post = Post::create([
             'title' => $request->title,
             'content' => $request->content,
+            'status' => $request->status,
             'category_id' => $category->id,
             'user_id' => Auth::user()->id,
         ]);
@@ -58,7 +63,7 @@ class PostController extends Controller
         if (!empty($post)) {
             return redirect()->route('post.index')->with('success','Successfully create post "'.$request->title.'".');
         } else {
-            return redirect()->route('post.index')->with('error','Oops! Failed create post "'.$request->title.'".');
+            return redirect()->back()->with('error','Oops! Failed create post "'.$request->title.'".');
         }
     }
 
@@ -81,7 +86,14 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
+        $section_header = 'Edit Article';
+        $categories = Category::all();
+        $method = Constant::PUT_METHOD;
+        $post = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Post::findOrFail($id) :
+            Post::where('user_id', Auth::user()->id)->findOrFail($id);
+        $url = route('post.update',$post->id);
+        return view('posts.create_or_edit', compact('section_header', 'categories', 'url', 'method', 'post'));
     }
 
     /**
@@ -93,7 +105,26 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->_validation($request);
+
+        $category = Category::findOrFail($request->category_id);
+
+        $post = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Post::findOrFail($id) :
+            Post::where('user_id', Auth::user()->id)->findOrFail($id);
+        $post->update([
+            'title' => $request->title,
+            'content' => $request->content,
+            'status' => $request->status,
+            'category_id' => $category->id,
+            // 'user_id' => Auth::user()->id, //Author tidak diupdate
+        ]);
+
+        if ($post) {
+            return redirect()->route('post.index')->with('success','Successfully update post "'.$request->title.'".');
+        } else {
+            return redirect()->back()->with('error','Oops! Failed update post "'.$request->title.'".');
+        }
     }
 
     /**
@@ -104,7 +135,17 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Post::findOrFail($id) :
+            Post::where('user_id', Auth::user()->id)->findOrFail($id);
+        $post_title = $post->title;
+        $post->delete();
+
+        if ($post) {
+            return redirect()->back()->with('success','Successfully delete post "'.$post_title.'".');
+        } else {
+            return redirect()->back()->with('error','Oops! Failed delete post "'.$post_title.'".');
+        }
     }
 
     private function _validation(Request $request)
@@ -112,6 +153,7 @@ class PostController extends Controller
         $request->validate([
             'title' => ['required','string','max:255'],
             'content' => ['required','string'],
+            'status' => ['required','string', Rule::in([Constant::TRUE_CONDITION,Constant::FALSE_CONDITION])],
             'category_id' => ['required','integer'],
         ]);
     }

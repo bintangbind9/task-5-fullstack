@@ -26,7 +26,7 @@
                     <h4>Write Article</h4>
                     <div class="card-header-action">
                       <a href="{{route('post.index')}}" class="btn btn-icon btn-warning" data-toggle="tooltip" title="Cancel"><i class="fas fa-times"></i></a>
-                      <button class="btn btn-icon btn-primary" data-toggle="tooltip" title="Publish" onclick="$('#btn-post-submit').click();"><i class="fas fa-save"></i></button>
+                      <button class="btn btn-icon btn-primary" data-toggle="tooltip" title="Submit" onclick="$('#btn-post-submit').click();"><i class="fas fa-save"></i></button>
                     </div>
                   </div>
                   <div class="card-body">
@@ -42,13 +42,13 @@
                         </div>
                       @endforeach
                     @endif
-                    <form id="form-post-store" action="{{route('post.store')}}" method="POST">
+                    <form id="form-post-store" action="{{$url}}" method="POST">
                       @csrf
-                      @method('post')
+                      @method($method)
                       <div class="form-group row mb-4">
                         <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Title</label>
                         <div class="col-sm-12 col-md-7">
-                          <input type="text" class="form-control" name="title" value="{{old('title')}}" required>
+                          <input type="text" class="form-control" name="title" value="{{old('title') ?? ( empty($post->title) ? '' : $post->title )}}" required>
                         </div>
                       </div>
                       <div class="form-group row mb-4">
@@ -56,22 +56,31 @@
                         <div class="col-sm-12 col-md-7">
                           <select class="form-control selectric" name="category_id" required>
                             @foreach ($categories as $c)
-                              <option value="{{$c->id}}" @if (old('category_id') == $c->id) selected @endif>{{$c->name}}</option>
+                              <option value="{{$c->id}}" @if ((old('category_id') ?? ( empty($post->category->id) ? null : $post->category->id )) == $c->id) selected @endif>{{$c->name}}</option>
                             @endforeach
                           </select>
                         </div>
                       </div>
                       <div class="form-group row mb-4">
+                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Publish</label>
+                        <label class="custom-switch">
+                            <input type="checkbox" class="custom-switch-input"
+                              @if ((old('status') ?? ( empty($post->status) ? Constant::FALSE_CONDITION : $post->status )) == Constant::TRUE_CONDITION) checked @endif>
+                            <span class="custom-switch-indicator"></span>
+                        </label>
+                        <input type="hidden" name="status" value="{{ old('status') ?? ( empty($post->status) ? Constant::FALSE_CONDITION : $post->status ) }}">
+                      </div>
+                      <div class="form-group row mb-4">
                         <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Content</label>
                         <div class="col-sm-12 col-md-7">
-                          <textarea name="content" class="summernote">{{old('content')}}</textarea>
+                          <textarea name="content" class="summernote">{{old('content') ?? ( empty($post->content) ? null : $post->content )}}</textarea>
                         </div>
                       </div>
                       <div class="form-group row mb-4">
                         <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
                         <div class="col-sm-12 col-md-7">
                           <a href="{{route('post.index')}}" class="btn btn-warning">Cancel</a>
-                          <button id="btn-post-submit" class="btn btn-primary">Publish</button>
+                          <button id="btn-post-submit" class="btn btn-primary">Submit</button>
                         </div>
                       </div>
                     </form>
@@ -97,7 +106,16 @@
   <script src="{{asset('stisla/node_modules/js/javascript.js')}}"></script>
   <script src="{{asset('stisla/node_modules/js/jquery.selectric.min.js')}}"></script>
 
-<script></script>
+<script>
+  $('input[type="checkbox"].custom-switch-input').on('change', function() {
+    obj_stat = $('input[name="status"]');
+    if ($(this).prop('checked')) {
+      obj_stat.val('{{Constant::TRUE_CONDITION}}');
+    } else {
+      obj_stat.val('{{Constant::FALSE_CONDITION}}');
+    }
+  });
+</script>
 @endpush
 
 @push('after-script')
