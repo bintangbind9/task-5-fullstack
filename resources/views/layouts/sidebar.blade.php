@@ -13,11 +13,14 @@
             </li>
             @role('Admin')
             @endrole
-            <li class="{{ (request()->is('home/post*')) ? 'nav-item dropdown active' : 'nav-item dropdown' }}">
+            <li class="{{ (request()->is('home/blog*')) ? 'nav-item dropdown active' : 'nav-item dropdown' }}">
               <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-blog"></i><span>Blog</span></a>
               <ul class="dropdown-menu">
                 <li class="{{ request()->routeIs('post.*') ? 'active' : null }}">
                   <a class="nav-link" href="{{route('post.index')}}"><i class="fa fa-newspaper"></i><span>Article</span></a>
+                </li>
+                <li class="{{ request()->routeIs('category.*') ? 'active' : null }}">
+                  <a class="nav-link" href="{{route('category.index')}}"><i class="fa fa-code-branch"></i><span>Category</span></a>
                 </li>
               </ul>
             </li>

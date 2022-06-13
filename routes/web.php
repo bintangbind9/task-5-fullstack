@@ -23,6 +23,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('/home/post', App\Http\Controllers\PostController::class);
-    Route::put('/home/post/update_stat/{id}', [App\Http\Controllers\PostController::class,'update_stat'])->name('post.update_stat');
+    Route::resource('/home/blog/post', App\Http\Controllers\PostController::class);
+    Route::put('/home/blog/post/update_stat/{id}', [App\Http\Controllers\PostController::class,'update_stat'])->name('post.update_stat');
+    Route::resource('/home/blog/category', App\Http\Controllers\CategoryController::class);
 });
