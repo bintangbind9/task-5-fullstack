@@ -8,6 +8,7 @@ use App\Helpers\Constant;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
@@ -75,7 +76,21 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Post::findOrFail($id) :
+            Post::where('user_id', Auth::user()->id)->findOrFail($id);
+
+        if (!empty($post)) {
+            return response()->json([
+                'success' => $post->status,
+                'message' => 'Get Post ID '.$post->id.' Successfully!'
+            ]);
+        } else {
+            return response()->json([
+                'error' => $id,
+                'message' => 'Get Post ID '.$id.' Failed!'
+            ]);
+        }
     }
 
     /**
@@ -124,6 +139,30 @@ class PostController extends Controller
             return redirect()->route('post.index')->with('success','Successfully update post "'.$request->title.'".');
         } else {
             return redirect()->back()->with('error','Oops! Failed update post "'.$request->title.'".');
+        }
+    }
+
+    public function update_stat(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => ['required','string','in:' . Constant::TRUE_CONDITION . ',' . Constant::FALSE_CONDITION],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error_validation' => $validator->errors()->first()]);
+        }
+
+        $post = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Post::findOrFail($id) :
+            Post::where('user_id', Auth::user()->id)->findOrFail($id);
+        $post->update([
+            'status' => $request->status
+        ]);
+
+        if ($post) {
+            return response()->json(['success' => $post->id, 'result' => $post->status]);
+        } else {
+            return response()->json(['error' => $id, 'result' => $post->status]);
         }
     }
 

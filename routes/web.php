@@ -24,4 +24,5 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/home/post', App\Http\Controllers\PostController::class);
+    Route::put('/home/post/update_stat/{id}', [App\Http\Controllers\PostController::class,'update_stat'])->name('post.update_stat');
 });

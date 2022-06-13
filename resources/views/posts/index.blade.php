@@ -37,9 +37,9 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">Category</th>
-                                    <th scope="col" class="nosort">Title</th>
-                                    <th scope="col" class="nosort">Author</th>
-                                    <th scope="col" class="nosort" style="width:100px;">
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Author</th>
+                                    <th scope="col" class="nosort nosearch" style="width:100px;">
                                         Publish
                                         <select id="search-stat" name="search-stat">
                                             <option value="">All</option>
@@ -50,7 +50,7 @@
                                     <th scope="col" class="nosort d-none">Publish</th>
                                     <th scope="col" class="nosort">Created At</th>
                                     <th scope="col" class="nosort">Updated At</th>
-                                    <th scope="col" class="nosort">Action</th>
+                                    <th scope="col" class="nosort nosearch">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -62,7 +62,7 @@
                                     <td>
                                         <label class="custom-switch mt-2">
                                             <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
-                                                data-url="{{route('post.update',$p->id)}}"
+                                                data-url="{{route('post.update_stat',$p->id)}}"
                                                 data-url-show="{{route('post.show',$p->id)}}"
                                                 data-id="{{$p->id}}" @if ($p->status == Constant::TRUE_CONDITION) checked @endif>
                                             <span class="custom-switch-indicator"></span>

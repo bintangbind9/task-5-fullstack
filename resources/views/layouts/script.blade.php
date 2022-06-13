@@ -6,6 +6,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
   <script src="{{asset('stisla/js/stisla.js')}}"></script>
 
+  <!-- Node Modules -->
+  <script src="{{asset('stisla/node_modules/js/jquery.dataTables.min.js')}}"></script>
+  <script src="{{asset('stisla/node_modules/js/dataTables.bootstrap4.min.js')}}"></script>
+  <script src="{{asset('stisla/node_modules/js/select.bootstrap4.min.js')}}"></script>
+  <script src="{{asset('stisla/node_modules/js/sweetalert.min.js')}}"></script>
+
   <!-- Template JS File -->
   <script src="{{asset('stisla/js/scripts.j')}}s"></script>
   <script src="{{asset('stisla/js/custom.js')}}"></script>
