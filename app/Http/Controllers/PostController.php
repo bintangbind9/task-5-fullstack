@@ -34,7 +34,9 @@ class PostController extends Controller
     public function create()
     {
         $section_header = 'Create Article';
-        $categories = Category::all();
+        $categories = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Category::all() :
+            Category::where('user_id',Auth::user()->id)->get();
         $method = Constant::POST_METHOD;
         $url = route('post.store');
         $post = null;
@@ -51,7 +53,9 @@ class PostController extends Controller
     {
         $this->_validation($request);
 
-        $category = Category::findOrFail($request->category_id);
+        $category = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Category::findOrFail($request->category_id) :
+            Category::where('user_id',Auth::user()->id)->findOrFail($request->category_id);
 
         $post = Post::create([
             'title' => $request->title,
@@ -102,7 +106,9 @@ class PostController extends Controller
     public function edit($id)
     {
         $section_header = 'Edit Article';
-        $categories = Category::all();
+        $categories = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Category::all() :
+            Category::where('user_id',Auth::user()->id)->get();
         $method = Constant::PUT_METHOD;
         $post = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
             Post::findOrFail($id) :
@@ -122,7 +128,9 @@ class PostController extends Controller
     {
         $this->_validation($request);
 
-        $category = Category::findOrFail($request->category_id);
+        $category = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Category::findOrFail($request->category_id) :
+            Category::where('user_id',Auth::user()->id)->findOrFail($request->category_id);
 
         $post = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
             Post::findOrFail($id) :

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Helpers\Constant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -16,7 +17,9 @@ class CategoryController extends Controller
     public function index()
     {
         $section_header = "Category";
-        $categories = Category::all();
+        $categories = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Category::all() :
+            Category::where('user_id', Auth::user()->id)->get();
         return view('categories.index', compact('section_header', 'categories'));
     }
 
@@ -46,6 +49,7 @@ class CategoryController extends Controller
 
         $category = Category::create([
             'name' => $request->name,
+            'user_id' => Auth::user()->id,
         ]);
 
         if (!empty($category)) {
@@ -76,7 +80,9 @@ class CategoryController extends Controller
     {
         $section_header = 'Edit Category';
         $method = Constant::PUT_METHOD;
-        $category = Category::findOrFail($id);
+        $category = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Category::findOrFail($id) :
+            Category::where('user_id', Auth::user()->id)->findOrFail($id);
         $url = route('category.update',$category->id);
         return view('categories.create_or_edit', compact('section_header', 'url', 'method', 'category'));
     }
@@ -92,9 +98,12 @@ class CategoryController extends Controller
     {
         $this->_validation($request);
 
-        $category = Category::findOrFail($id);
+        $category = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Category::findOrFail($id) :
+            Category::where('user_id', Auth::user()->id)->findOrFail($id);
         $category->update([
             'name' => $request->name,
+            // 'user_id' => Auth::user()->id, //Author tidak diupdate
         ]);
 
         if ($category) {
@@ -112,7 +121,9 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::findOrFail($id);
+        $category = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Category::findOrFail($id) :
+            Category::where('user_id', Auth::user()->id)->findOrFail($id);
         $category_name = $category->name;
         $category->delete();
 

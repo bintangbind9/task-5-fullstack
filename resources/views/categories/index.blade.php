@@ -37,6 +37,7 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">Name</th>
+                                    <th scope="col">Creator</th>
                                     <th scope="col" class="nosort">Created At</th>
                                     <th scope="col" class="nosort">Updated At</th>
                                     <th scope="col" class="nosort nosearch">Action</th>
@@ -46,6 +47,7 @@
                                 @foreach ($categories as $no => $c)
                                 <tr id="tr_{{$c->id}}" data-id="{{$c->id}}">
                                     <td>{{$c->name}}</td>
+                                    <td>{{$c->user->name}}</td>
                                     <td>{{Carbon\Carbon::parse($c->created_at)->format(Constant::FORMAT_DATE_TIME)}}</td>
                                     <td>{{Carbon\Carbon::parse($c->updated_at)->format(Constant::FORMAT_DATE_TIME)}}</td>
                                     <td>
