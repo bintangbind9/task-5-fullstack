@@ -9,14 +9,14 @@
     @include('layouts.alert')
 
     <div class="section-body">
-            <h2 class="section-title">New Category</h2>
-            <p class="section-lead">Here, you can add category for your article.</p>
+            <h2 class="section-title">{{$section_header}}</h2>
+            <p class="section-lead">Here, you can add or edit category for your article.</p>
 
             <div class="row">
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4>Add Category</h4>
+                    <h4>Submit Category</h4>
                     <div class="card-header-action">
                       <a href="{{route('category.index')}}" class="btn btn-icon btn-warning" data-toggle="tooltip" title="Cancel"><i class="fas fa-times"></i></a>
                       <button class="btn btn-icon btn-primary" data-toggle="tooltip" title="Submit" onclick="$('#btn-category-submit').click();"><i class="fas fa-save"></i></button>

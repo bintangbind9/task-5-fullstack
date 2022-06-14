@@ -74,7 +74,11 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $section_header = 'Edit Category';
+        $method = Constant::PUT_METHOD;
+        $category = Category::findOrFail($id);
+        $url = route('category.update',$category->id);
+        return view('categories.create_or_edit', compact('section_header', 'url', 'method', 'category'));
     }
 
     /**
@@ -86,7 +90,18 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->_validation($request);
+
+        $category = Category::findOrFail($id);
+        $category->update([
+            'name' => $request->name,
+        ]);
+
+        if ($category) {
+            return redirect()->route('category.index')->with('success','Successfully update category "'.$request->name.'".');
+        } else {
+            return redirect()->back()->with('error','Oops! Failed update category "'.$request->name.'".');
+        }
     }
 
     /**
@@ -97,7 +112,15 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = Category::findOrFail($id);
+        $category_name = $category->name;
+        $category->delete();
+
+        if ($category) {
+            return redirect()->back()->with('success','Successfully delete category "'.$category_name.'".');
+        } else {
+            return redirect()->back()->with('error','Oops! Failed delete category "'.$category_name.'".');
+        }
     }
 
     private function _validation(Request $request)

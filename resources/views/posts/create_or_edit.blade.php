@@ -16,7 +16,7 @@
     @include('layouts.alert')
 
     <div class="section-body">
-            <h2 class="section-title">New Article</h2>
+            <h2 class="section-title">{{$section_header}}</h2>
             <p class="section-lead">Here, you can write the article with format what you want.</p>
 
             <div class="row">
