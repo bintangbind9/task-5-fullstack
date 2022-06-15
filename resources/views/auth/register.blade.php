@@ -26,9 +26,9 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                                <span>Semua Role dibuka untuk testing.</span><br>
+                                <span>All Roles open for testing.</span><br>
                                 <span>Admin => Full Control.</span><br>
-                                <span>User => Read Only.</span>
+                                <span>User => Can only CRUD Post. not for Categories!</span>
                             </div>
                         </div>
 

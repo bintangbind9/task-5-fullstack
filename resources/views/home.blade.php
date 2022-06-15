@@ -18,34 +18,38 @@
     <div class="section-body">
           <div class="row">
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-primary">
-                  <i class="far fa-user"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>{{count($posts) > 1 ? 'Articles' : 'Article'}}</h4>
+              <a href="{{route('post.index')}}">
+                <div class="card card-statistic-1">
+                  <div class="card-icon bg-primary">
+                    <i class="far fa-user"></i>
                   </div>
-                  <div class="card-body">
-                    {{count($posts)}}
+                  <div class="card-wrap">
+                    <div class="card-header">
+                      <h4>{{count($posts) > 1 ? 'Articles' : 'Article'}}</h4>
+                    </div>
+                    <div class="card-body">
+                      {{count($posts)}}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </a>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-danger">
-                  <i class="far fa-newspaper"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>{{count($categories) > 1 ? 'Categories' : 'Category'}}</h4>
+              <a href="{{route('category.index')}}">
+                <div class="card card-statistic-1">
+                  <div class="card-icon bg-danger">
+                    <i class="far fa-newspaper"></i>
                   </div>
-                  <div class="card-body">
-                    {{count($categories)}}
+                  <div class="card-wrap">
+                    <div class="card-header">
+                      <h4>{{count($categories) > 1 ? 'Categories' : 'Category'}}</h4>
+                    </div>
+                    <div class="card-body">
+                      {{count($categories)}}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </a>
             </div>
             @role(Constant::ROLE_ADMIN)
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
@@ -166,7 +170,7 @@
                     </div>
                   @else
                     <div class="text-center pt-1 pb-1">
-                      <span class="btn btn-primary btn-lg btn-round">Nothing to show</span>
+                      <p>Nothing to show</p>
                     </div>
                   @endif
                 </div>
