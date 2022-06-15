@@ -72,6 +72,29 @@ class PostController extends Controller
         }
     }
 
+    public function store_on_home(Request $request)
+    {
+        $this->_validation($request);
+
+        $category = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Category::findOrFail($request->category_id) :
+            Category::where('user_id',Auth::user()->id)->findOrFail($request->category_id);
+
+        $post = Post::create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'status' => $request->status,
+            'category_id' => $category->id,
+            'user_id' => Auth::user()->id,
+        ]);
+
+        if (!empty($post)) {
+            return redirect()->back()->with('success','Successfully save draft post "'.$request->title.'".');
+        } else {
+            return redirect()->back()->with('error','Oops! Failed save draft post "'.$request->title.'".');
+        }
+    }
+
     /**
      * Display the specified resource.
      *

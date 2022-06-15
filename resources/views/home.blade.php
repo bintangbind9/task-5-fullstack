@@ -16,7 +16,7 @@
     @include('layouts.alert')
 
     <div class="section-body">
-        <div class="row">
+          <div class="row">
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon bg-primary">
@@ -82,42 +82,55 @@
           </div>
           <div class="row">
             <div class="col-lg-8 col-md-12 col-12 col-sm-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>Statistics</h4>
-                  <div class="card-header-action">
-                    <div class="btn-group">
-                      <a href="#" class="btn btn-primary">Week</a>
-                      <a href="#" class="btn">Month</a>
+              @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                  <div class="alert alert-danger alert-dismissible show fade">
+                    <div class="alert-body">
+                      <button class="close" data-dismiss="alert">
+                        <span>×</span>
+                      </button>
+                      {{$error}}
                     </div>
                   </div>
-                </div>
-                <div class="card-body">
-                  <canvas id="myChart" height="182"></canvas>
-                  <div class="statistic-details mt-sm-4">
-                    <div class="statistic-details-item">
-                      <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span> 7%</span>
-                      <div class="detail-value">$243</div>
-                      <div class="detail-name">Today's Sales</div>
+                @endforeach
+              @endif
+              <form method="post" action="{{route('post.store_on_home')}}" class="needs-validation" novalidate="">
+                @csrf
+                @method('post')
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Quick Draft</h4>
+                  </div>
+                  <div class="card-body pb-0">
+                    <input type="hidden" name="status" value="{{Constant::FALSE_CONDITION}}">
+                    <div class="form-group">
+                      <label>Title</label>
+                      <input type="text" name="title" class="form-control" value="{{old('title')}}" required>
+                      <div class="invalid-feedback">
+                        Please fill in the title
+                      </div>
                     </div>
-                    <div class="statistic-details-item">
-                      <span class="text-muted"><span class="text-danger"><i class="fas fa-caret-down"></i></span> 23%</span>
-                      <div class="detail-value">$2,902</div>
-                      <div class="detail-name">This Week's Sales</div>
+                    <div class="form-group">
+                      <label>Category</label>
+                      <select name="category_id" class="form-control" required>
+                        @foreach ($categories as $c)
+                          <option value="{{$c->id}}" @if (old('category_id') == $c->id) selected @endif>{{$c->name}}</option>
+                        @endforeach
+                      </select>
+                      <div class="invalid-feedback">
+                        Please select the category
+                      </div>
                     </div>
-                    <div class="statistic-details-item">
-                      <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span>9%</span>
-                      <div class="detail-value">$12,821</div>
-                      <div class="detail-name">This Month's Sales</div>
-                    </div>
-                    <div class="statistic-details-item">
-                      <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span> 19%</span>
-                      <div class="detail-value">$92,142</div>
-                      <div class="detail-name">This Year's Sales</div>
+                    <div class="form-group">
+                      <label>Content</label>
+                      <textarea name="content" class="summernote-simple">{{old('content')}}</textarea>
                     </div>
                   </div>
+                  <div class="card-footer pt-0">
+                    <button class="btn btn-primary">Save Draft</button>
+                  </div>
                 </div>
-              </div>
+              </form>
             </div>
             <div class="col-lg-4 col-md-12 col-12 col-sm-12">
               <div class="card">
@@ -130,7 +143,13 @@
                       @foreach ($posts as $post_no => $p)
                         <li class="media">
                           <div class="media-body">
-                            <div class="float-right text-primary">{{Carbon\Carbon::parse($p->created_at)->format(Constant::FORMAT_DATE_TIME)}}</div>
+                            <div class="float-right text-primary">
+                              {{Carbon\Carbon::parse($p->created_at)->format(Constant::FORMAT_DATE_TIME)}} | 
+                              <i class="fas {{$p->status == Constant::TRUE_CONDITION ? 'fa-check' : 'fa-sticky-note'}}"
+                                data-toggle="tooltip"
+                                title="{{$p->status == Constant::TRUE_CONDITION ? 'Published' : 'Draft'}}"
+                                style="cursor:pointer;"></i>
+                            </div>
                             <div class="media-title">{{$p->user->name}}</div>
                             <span class="text-small text-muted">{{$p->title}}</span>
                           </div>
@@ -154,33 +173,6 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-lg-12 col-md-12 col-12 col-sm-12">
-              <form method="post" class="needs-validation" novalidate="">
-                <div class="card">
-                  <div class="card-header">
-                    <h4>Quick Draft</h4>
-                  </div>
-                  <div class="card-body pb-0">
-                    <div class="form-group">
-                      <label>Title</label>
-                      <input type="text" name="title" class="form-control" required>
-                      <div class="invalid-feedback">
-                        Please fill in the title
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label>Content</label>
-                      <textarea class="summernote-simple"></textarea>
-                    </div>
-                  </div>
-                  <div class="card-footer pt-0">
-                    <button class="btn btn-primary">Save Draft</button>
-                  </div>
-                </div>
-              </form>
-            </div>
-        </div>
     </div>
 @endsection
 
@@ -201,7 +193,7 @@
 <script src="{{asset('stisla/node_modules/js/jquery.chocolat.min.js')}}"></script>
 
 <!-- Page Specific JS File -->
-<script src="{{asset('stisla/js/page/index-0.js')}}"></script>
+{{-- <script src="{{asset('stisla/js/page/index-0.js')}}"></script> --}}
 
 <script></script>
 @endpush
