@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Role;
+use App\Models\User;
+use App\Helpers\Constant;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,11 +17,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        $guard_name = 'web';
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        Role::factory()->create([
+            'name' => Constant::ROLE_ADMIN,
+            'guard_name' => $guard_name,
+        ]);
+
+        Role::factory()->create([
+            'name' => Constant::ROLE_USER,
+            'guard_name' => $guard_name,
+        ]);
+
+        User::factory(5)->create();
     }
 }

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Helpers\Constant;
 use Illuminate\Http\Request;
+use App\Models\Model_has_role;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,6 +30,13 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $model_has_roles = Model_has_role::where('model_id',Auth::user()->id)->get();
+        if (count($model_has_roles) == 0) {
+            $default_roles = array(Constant::ROLE_ADMIN,Constant::ROLE_USER);
+            $random_key = array_rand($default_roles,1);
+            Auth::user()->assignRole($default_roles[$random_key]);
+        }
+
         $section_header = 'Dashboard';
         $posts = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
             Post::orderBy('created_at','desc')->get() :
