@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Category::class);
     }
+
+    public function model_has_roles()
+    {
+        return $this->hasMany(Model_has_role::class,'model_id');
+    }
 }

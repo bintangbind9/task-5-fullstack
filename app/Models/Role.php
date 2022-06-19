@@ -10,4 +10,9 @@ class Role extends Model
     use HasFactory;
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    public function model_has_roles()
+    {
+        return $this->hasMany(Model_has_role::class);
+    }
 }
