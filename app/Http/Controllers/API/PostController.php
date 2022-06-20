@@ -21,7 +21,9 @@ class PostController extends BaseController
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
+            Post::all() :
+            Post::where('user_id', Auth::user()->id)->get();
         return $this->sendResponse(PostResource::collection($posts), 'Posts retrieved successfully.');
     }
 
