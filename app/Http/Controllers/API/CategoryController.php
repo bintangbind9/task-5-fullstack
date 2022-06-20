@@ -17,11 +17,12 @@ class CategoryController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $per_page = $request->per_page ?? Constant::DEFAULT_PER_PAGE;
         $categories = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
-            Category::all() :
-            Category::where('user_id', Auth::user()->id)->get();
+            Category::paginate($per_page) :
+            Category::where('user_id', Auth::user()->id)->paginate($per_page);
         return $this->sendResponse(CategoryResource::collection($categories), 'Categories retrieved successfully.');
     }
 

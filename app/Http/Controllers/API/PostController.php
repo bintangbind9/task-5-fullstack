@@ -19,11 +19,12 @@ class PostController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $per_page = $request->per_page ?? Constant::DEFAULT_PER_PAGE;
         $posts = Auth::user()->hasRole(Constant::ROLE_ADMIN) ?
-            Post::all() :
-            Post::where('user_id', Auth::user()->id)->get();
+            Post::paginate($per_page) :
+            Post::where('user_id', Auth::user()->id)->paginate($per_page);
         return $this->sendResponse(PostResource::collection($posts), 'Posts retrieved successfully.');
     }
 
